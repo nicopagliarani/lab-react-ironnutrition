@@ -5,7 +5,7 @@ import foods from './foods.json';
 import {useState} from 'react';
 import FoodBox from './components/Foodbox'
 import AddFoodForm from './components/AddFoodForm';
-import Search from './components/Search';
+
 
 function App() {
   const [allFoods,setAllFoods]= useState(foods)
@@ -23,6 +23,28 @@ function App() {
     const filterFoods = (filter) => {
       setFilter(filter);
     }
+    const changeFood = (index) => (update) => {
+      const updatedFood = allFoods.map((food, current) => {
+        if (index === current) {
+          return { ...food, ...update };
+        }
+        return food;
+      });
+      setAllFoods(updatedFood);
+    };
+    const toFoodComponent = (food, index) => {
+      return (
+        <FoodBox
+          key={food.name}
+          food={food}
+          changeFood={changeFood(index)}
+        />
+      );
+    };
+    const handleFilterUpdate = (e) => {
+      setFilter(e.target.value);
+    }
+    
     const deleteFoods = (foodName) => {
       const filteredFood = allFoods.filter((food) => {
         return food.name !== foodName;
@@ -34,12 +56,18 @@ function App() {
   return (
     <div className="App">
       <div>
-      <h1>Search your Food</h1>
-      <Search filterFoods={filterFoods} />
-      </div>
-      <div>
       <h1>Add your Food</h1>
       <AddFoodForm addFood={addFood}/>
+      </div>
+      <div>
+      <h1>Search your Food</h1>
+      Search: <input value={filter} onChange={handleFilterUpdate} />
+      {filter === "" ? allFoods.map(toFoodComponent) : allFoods.filter((food) => {
+        const lowerFilter = filter.toLowerCase();
+        return (
+          food.name.toLowerCase().includes(lowerFilter)
+        );
+      }).map(toFoodComponent)}
       </div>
       
       
