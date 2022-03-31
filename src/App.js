@@ -11,7 +11,7 @@ function App() {
   const [allFoods,setAllFoods]= useState(foods)
   const [displayList, setDisplayList] = useState(foods)
   const [filter, setFilter] = useState("");
-  
+  const [formIsShown, setFormIsShown]= useState (false);  
   
   const addFood = (newFood) => {
 
@@ -52,12 +52,17 @@ function App() {
       setDisplayList(filteredFood);
       setAllFoods(filteredFood);
     };
+    const toggleForm = ()=> {
+      setFormIsShown(!formIsShown)
+    };
     
   return (
     <div className="App">
+       <Button type="primary" onClick={toggleForm}> 
+       {formIsShown ? 'Hide Form' : 'Add New Food'} </Button>
       <div>
       <h1>Add your Food</h1>
-      <AddFoodForm addFood={addFood}/>
+      {formIsShown && < AddFoodForm addFood={addFood}/>}
       </div>
       <div>
       <h1>Search your Food</h1>
